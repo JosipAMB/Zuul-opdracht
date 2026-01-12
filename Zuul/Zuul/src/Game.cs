@@ -14,35 +14,37 @@ class Game
 	}
 
 	// Initialise the Rooms (and the Items)
-	private void CreateRooms()
+		private void CreateRooms()
 	{
-		// Create the rooms
+		// Maak de kamers
 		Room outside = new Room("outside the main entrance of the university");
 		Room theatre = new Room("in a lecture theatre");
 		Room pub = new Room("in the campus pub");
 		Room lab = new Room("in a computing lab");
 		Room office = new Room("in the computing admin office");
 
-		// Initialise room exits
+		// Extra kamers voor verdiepingen
+		Room labUp = new Room("in the upper floor of the computing lab");
+		Room officeUp = new Room("in the upper floor of the admin office");
+
+		// Stel de uitgangen in
 		outside.AddExit("east", theatre);
 		outside.AddExit("south", lab);
 		outside.AddExit("west", pub);
 
 		theatre.AddExit("west", outside);
-
 		pub.AddExit("east", outside);
 
 		lab.AddExit("north", outside);
 		lab.AddExit("east", office);
+		lab.AddExit("up", labUp);      // naar boven
+		labUp.AddExit("down", lab);    // naar beneden
 
 		office.AddExit("west", lab);
+		office.AddExit("up", officeUp);    // naar boven
+		officeUp.AddExit("down", office);  // naar beneden
 
-		// Create your Items here
-		// ...
-		// And add them to the Rooms
-		// ...
-
-		// Start game outside
+		// Start buiten
 		currentRoom = outside;
 	}
 
@@ -149,4 +151,5 @@ class Game
 		currentRoom = nextRoom;
 		Console.WriteLine(currentRoom.GetLongDescription());
 	}
+
 }
