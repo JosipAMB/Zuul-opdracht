@@ -1,22 +1,19 @@
 using System;
 
 class Game
-{
-	// Private fields
+	{
 	private Parser parser;
-	private Room currentRoom;
-
-	// Constructor
-	public Game()
+	private Player player;
+	public Game ()
 	{
 		parser = new Parser();
+		player = new Player();
 		CreateRooms();
 	}
 
 	// Initialise the Rooms (and the Items)
 		private void CreateRooms()
 	{
-		// Maak de kamers
 		Room outside = new Room("outside the main entrance of the university");
 		Room theatre = new Room("in a lecture theatre");
 		Room pub = new Room("in the campus pub");
@@ -45,7 +42,7 @@ class Game
 		officeUp.AddExit("down", office);  // naar beneden
 
 		// Start buiten
-		currentRoom = outside;
+		player.CurrentRoom = outside;
 	}
 
 	//  Main play routine. Loops until end of play.
@@ -74,7 +71,7 @@ class Game
 		Console.WriteLine("Zuul is a new, incredibly boring adventure game.");
 		Console.WriteLine("Type 'help' if you need help.");
 		Console.WriteLine();
-		Console.WriteLine(currentRoom.GetLongDescription());
+		Console.WriteLine(player.CurrentRoom.GetLongDescription());
 	}
 
 	// Given a command, process (that is: execute) the command.
@@ -92,7 +89,7 @@ class Game
 
 		else if (command.CommandWord == "look")
 		{
-    		Console.WriteLine(currentRoom.GetLongDescription());
+    		Console.WriteLine(player.CurrentRoom.GetLongDescription());
 		}
 
 
@@ -129,27 +126,43 @@ class Game
 
 	// Try to go to one direction. If there is an exit, enter the new
 	// room, otherwise print an error message.
-	private void GoRoom(Command command)
-	{
-		if(!command.HasSecondWord())
-		{
-			// if there is no second word, we don't know where to go...
-			Console.WriteLine("Go where?");
-			return;
-		}
+private void GoRoom(Command command)
+{
+    if (!command.HasSecondWord())
+    {
+        Console.WriteLine("Go where?");
+        return;
+    }
 
-		string direction = command.SecondWord;
+    string direction = command.SecondWord;
+    Room nextRoom = player.CurrentRoom.GetExit(direction);
 
-		// Try to go to the next room.
-		Room nextRoom = currentRoom.GetExit(direction);
-		if (nextRoom == null)
-		{
-			Console.WriteLine("There is no door to "+direction+"!");
-			return;
-		}
+    if (nextRoom == null)
+    {
+        Console.WriteLine("There is no door to " + direction + "!");
+        return;
+    }
 
-		currentRoom = nextRoom;
-		Console.WriteLine(currentRoom.GetLongDescription());
-	}
+    // beweeg speler
+    player.CurrentRoom = nextRoom;
 
+    // verlies health
+    player.Damage(5);
+    Console.WriteLine(player.CurrentRoom.GetLongDescription());
+    Console.WriteLine("Your health: " + player.Health);
+
+    // check dood
+    if (!player.IsAlive())
+    {
+        Console.WriteLine("You have died! Game over.");
+        Environment.Exit(0);
+    }
+
+    // check win: gebruik de description van de kamer
+    if (player.CurrentRoom.GetShortDescription() == "in the upper floor of the admin office")
+    {
+        Console.WriteLine("Congratulations! You won!");
+        Environment.Exit(0);
+    }
+}
 }
