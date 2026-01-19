@@ -5,13 +5,32 @@ class Room
 	// Private fields
 	private string description;
 	private Dictionary<string, Room> exits; // stores exits of this room.
-
 	// Create a room described "description". Initially, it has no exits.
 	// "description" is something like "in a kitchen" or "in a court yard".
-	public Room(string desc)
+
+	// field
+	private Inventory chest;
+	// property
+	public Inventory Chest
 	{
-		description = desc;
+	get { return chest; }
+	}
+	// constructor
+	public Room(string description)
+	{
+		this.description = description;
 		exits = new Dictionary<string, Room>();
+		chest = new Inventory(999999);
+	}
+
+	public void AddItem(Item item)
+	{
+		chest.Put(item.Description, item);
+	}
+
+	public string GetItemString()
+	{
+		return "Items here: " + chest.Show();
 	}
 
 	// Define an exit for this room.
@@ -19,13 +38,11 @@ class Room
 	{
 		exits.Add(direction, neighbor);
 	}
-
 	// Return the description of the room.
 	public string GetShortDescription()
 	{
 		return description;
 	}
-
 	// Return a long description of this room, in the form:
 	//     You are in the kitchen.
 	//     Exits: north, west
@@ -35,9 +52,10 @@ class Room
 		str += description;
 		str += ".\n";
 		str += GetExitString();
+		str += "\n";
+		str += GetItemString();   // items tonen
 		return str;
 	}
-
 	// Return the room that is reached if we go from this room in direction
 	// "direction". If there is no room in that direction, return null.
 	public Room GetExit(string direction)
@@ -48,14 +66,12 @@ class Room
 		}
 		return null;
 	}
-
 	// Return a string describing the room's exits, for example
 	// "Exits: north, west".
 	private string GetExitString()
 	{
 		string str = "Exits: ";
 		str += String.Join(", ", exits.Keys);
-
 		return str;
 	}
 }
