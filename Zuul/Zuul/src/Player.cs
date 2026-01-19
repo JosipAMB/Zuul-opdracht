@@ -15,26 +15,44 @@ class Player
     // methods
     public bool TakeFromChest(string itemName)
     {
-    // TODO implementeer:
-    // Haal het Item uit de Room
-    // Zet het in je backpack
-    // Bekijk de return values
-    // Past het Item niet? Zet het terug in de chest
-    // Laat de speler weten wat er gebeurt
-    // Return true/false voor succes/mislukt
-    return false;
-    }
-    public bool DropToChest(string itemName)
-    {
-    // TODO implementeer:
-    // Haal Item uit je backpack
-    // Zet het in de Room
-    // Bekijk de return values
-    // Laat de speler weten wat er gebeurt
-    // Return true/false voor succes/mislukt
-    return false;
+        // haal item uit de kamer
+        Item item = CurrentRoom.Chest.Get(itemName);
+
+        if (item == null)
+        {
+            Console.WriteLine("Item is not in the room.");
+            return false;
+        }
+
+        // probeer in backpack te stoppen
+        if (!backpack.Put(itemName, item))
+        {
+            Console.WriteLine("Item doesn't fit in your inventory.");
+            // leg terug in de room
+            CurrentRoom.Chest.Put(itemName, item);
+            return false;
+        }
+
+        Console.WriteLine("You picked up the " + itemName + ".");
+        return true;
     }
 
+    public bool DropToChest(string itemName)
+    {
+        // haal item uit backpack
+        Item item = backpack.Get(itemName);
+
+        if (item == null)
+        {
+            Console.WriteLine("You don't have that item.");
+            return false;
+        }
+
+        // leg in de kamer
+        CurrentRoom.Chest.Put(itemName, item);
+        Console.WriteLine("You dropped the " + itemName + ".");
+        return true;
+    }
     // auto property
     public Room CurrentRoom { get; set; }
     // fields
