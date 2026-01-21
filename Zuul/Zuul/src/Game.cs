@@ -11,31 +11,27 @@ class Game
 		CreateRooms();
 	}
 	// methods
-// methods
-private void Take(Command command)
-{
-    if (!command.HasSecondWord())
-    {
-        Console.WriteLine("Take what?");
-        return;
-    }
+	private void Take(Command command)
+	{
+		if (!command.HasSecondWord())
+		{
+			Console.WriteLine("Take what?");
+			return;
+		}
+		string itemName = command.SecondWord;
+		player.TakeFromChest(itemName);
+	}
 
-    string itemName = command.SecondWord;
-    player.TakeFromChest(itemName);
-}
-
-private void Drop(Command command)
-{
-    if (!command.HasSecondWord())
-    {
-        Console.WriteLine("Drop what?");
-        return;
-    }
-
-    string itemName = command.SecondWord;
-    player.DropToChest(itemName);
-}
-
+	private void Drop(Command command)
+	{
+		if (!command.HasSecondWord())
+		{
+			Console.WriteLine("Drop what?");
+			return;
+		}
+		string itemName = command.SecondWord;
+		player.DropToChest(itemName);
+	}
 
 	// Initialise the Rooms (and the Items)
 		private void CreateRooms()
@@ -75,6 +71,20 @@ private void Drop(Command command)
 		// Start buiten
 		player.CurrentRoom = outside;
 	}
+	//	Methode voor use
+	private void Use(Command command)
+	{
+		if (!command.HasSecondWord())
+		{
+			Console.WriteLine("Use what?");
+			return;
+		}
+
+		string itemName = command.SecondWord;
+		Console.WriteLine(player.Use(itemName));
+	}
+
+
 	//  Main play routine. Loops until end of play.
 	public void Play()
 	{
@@ -127,12 +137,18 @@ private void Drop(Command command)
 			case "go":
 				GoRoom(command);
 				break;
+			case "status":
+				PrintStatus();
+				break;
 			case "take":
 				Take(command);
 				break;
 			case "drop":
 				Drop(command);
 				break;
+			case "use":
+    			Use(command);
+    			break;
 			case "quit":
 				wantToQuit = true;
 				break;
@@ -154,6 +170,10 @@ private void Drop(Command command)
 		parser.PrintValidCommands();
 	}
 
+	private void PrintStatus()
+	{
+	Console.WriteLine("You have " + player.Health() + " health.");
+	}
 	// Try to go to one direction. If there is an exit, enter the new
 	// room, otherwise print an error message.
 	private void GoRoom(Command command)
@@ -179,7 +199,7 @@ private void Drop(Command command)
 		// verlies health
 		player.Damage(5);
 		Console.WriteLine(player.CurrentRoom.GetLongDescription());
-		Console.WriteLine("Your health: " + player.Health);
+		Console.WriteLine("You have " + player.Health() + " health.");
 
 		// check dood
 		if (!player.IsAlive())
