@@ -7,10 +7,38 @@ class Player
     // constructor
     public Player()
     {
-    // 25kg is best zwaar om de hele dag te dragen
     backpack = new Inventory(25);
     CurrentRoom = null;
     health = 100;
+    }
+
+    public string Use(string itemName)
+    // Use method
+    {
+        Item item = backpack.Get(itemName);
+
+        if (item == null)
+        {
+            return "You don't have that item.";
+        }
+
+        if (itemName == "book")
+        {
+            Heal(10);
+            return "You read the book and feel better (+10 health).";
+        }
+
+        if (itemName == "sword")
+        {
+            return "You swing the sword. Looks dangerous!";
+        }
+
+        if (itemName == "key")
+        {
+            return "You use the key, but nothing happens.";
+        }
+
+        return "You can't use that.";
     }
     // methods
     public bool TakeFromChest(string itemName)
@@ -74,8 +102,8 @@ class Player
     {
         return health > 0;
     }
-    public int Health
+    public int Health()
     {
-        get { return health; }
+        { return health; }
     }
 }
