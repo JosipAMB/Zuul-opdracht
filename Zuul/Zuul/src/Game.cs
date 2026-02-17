@@ -34,17 +34,16 @@ class Game
 	}
 
 	// Initialise the Rooms (and the Items)
-		private void CreateRooms()
+	private void CreateRooms()
 	{
-		Room outside = new Room("outside the main entrance of the university");
-		Room theatre = new Room("in a lecture theatre");
-		Room pub = new Room("in the campus pub");
-		Room lab = new Room("in a computing lab");
-		Room office = new Room("in the computing admin office");
-		// Extra kamers voor verdiepingen
-		Room labUp = new Room("in the upper floor of the computing lab");
-		Room officeUp = new Room("in the upper floor of the admin office");
+		Room outside = new Room("oustide the jumbo main entrance");
+		Room theatre = new Room("in a office");
+		Room pub = new Room("in the canteen");
+		Room lab = new Room("in the warehouse");
+		Room office = new Room("in the boys toilet");
+		Room officeUp = new Room("in the upper floor of the boys toilet");
 
+		// exits
 		outside.AddExit("east", theatre);
 		outside.AddExit("south", lab);
 		outside.AddExit("west", pub);
@@ -54,21 +53,22 @@ class Game
 
 		lab.AddExit("north", outside);
 		lab.AddExit("east", office);
-		lab.AddExit("up", labUp);      // naar boven
-		labUp.AddExit("down", lab);    // naar beneden
 
 		office.AddExit("west", lab);
-		office.AddExit("up", officeUp);    // naar boven
-		officeUp.AddExit("down", office);  // naar beneden
-		// Maak items
+		office.AddExit("up", officeUp);
+
+		officeUp.AddExit("down", office);
+
+		// items
 		Item sword = new Item(5, "sword");
 		Item book = new Item(2, "book");
 		Item key = new Item(1, "key");
-		// Voeg items toe aan kamers
+
 		outside.AddItem(book);
 		lab.AddItem(sword);
-		officeUp.AddItem(key);
-		// Start buiten
+		theatre.AddItem(key);
+
+		// start
 		player.CurrentRoom = outside;
 	}
 	//	Methode voor use
@@ -79,11 +79,9 @@ class Game
 			Console.WriteLine("Use what?");
 			return;
 		}
-
 		string itemName = command.SecondWord;
 		Console.WriteLine(player.Use(itemName));
 	}
-
 
 	//  Main play routine. Loops until end of play.
 	public void Play()
@@ -121,7 +119,7 @@ class Game
 		if(command.IsUnknown())
 		{
 			Console.WriteLine("I don't know what you mean...");
-			return wantToQuit; // false
+			return wantToQuit;
 		}
 
 		else if (command.CommandWord == "look")
@@ -164,7 +162,7 @@ class Game
 	private void PrintHelp()
 	{
 		Console.WriteLine("You are lost. You are alone.");
-		Console.WriteLine("You wander around at the university.");
+		Console.WriteLine("You wander around the jumbo.");
 		Console.WriteLine();
 		// let the parser print the commands
 		parser.PrintValidCommands();
@@ -208,8 +206,8 @@ class Game
 			Environment.Exit(0);
 		}
 
-		// check win: gebruik de description van de kamer
-		if (player.CurrentRoom.GetShortDescription() == "in the upper floor of the admin office")
+		//check win: gebruik de description van de kamer
+		if (player.CurrentRoom.GetShortDescription() == "in the upper floor of the boys toilet")
 		{
 			Console.WriteLine("Congratulations! You won!");
 			Environment.Exit(0);
