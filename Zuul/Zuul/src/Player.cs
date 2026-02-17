@@ -75,7 +75,6 @@ class Player
             Console.WriteLine("You don't have that item.");
             return false;
         }
-
         // leg in de kamer
         CurrentRoom.Chest.Put(itemName, item);
         Console.WriteLine("You dropped the " + itemName + ".");
